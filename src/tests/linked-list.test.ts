@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { LinkedList, LinkedListNode } from "../linked-list";
 
-describe("LinkedList", () => {
+describe("LinkedList<T>", () => {
   test("addFirst", () => {
     const list = new LinkedList<number>();
     list.addFirst(1);
