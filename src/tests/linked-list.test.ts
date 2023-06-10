@@ -40,6 +40,14 @@ describe("LinkedList<T>", () => {
     expect(list.count).toEqual(0);
   });
 
+  test("addAfter", () => {
+    const list = new LinkedList<number>();
+    list.addFirst(1);
+    list.addAfter(1, 2)
+    expect(list.last.value).toEqual(2)
+    expect(list.count).toEqual(2)
+  })
+
   test("find", () => {
     const list = new LinkedList<number>();
     list.addFirst(1);

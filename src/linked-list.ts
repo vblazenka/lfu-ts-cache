@@ -149,6 +149,34 @@ export class LinkedList<T> {
   }
 
   /**
+   * Adds a node or a value after a specified node in the list.
+   *
+   * @param node - The node after which to add the new value.
+   * @param newNode - The value or node to add to the list.
+   * @returns The new `LinkedListNode<T>` containing value
+   */
+  addAfter(node: T | LinkedListNode<T>, newNode: T | LinkedListNode<T>) {
+    const lookupNode = this.isLinkedListNodeInstance(node) ? node : this.find(node);
+    if (!lookupNode) {
+      return null;
+    }
+    const insertNode = this.getNode(newNode);
+
+    insertNode.next = lookupNode.next;
+    insertNode.prev = lookupNode;
+
+    if (lookupNode.next) {
+      lookupNode.next.prev = insertNode;
+    } else {
+      this.tail = insertNode;
+    }
+
+    lookupNode.next = insertNode;
+
+    this.count++;
+  }
+
+  /**
    * Finds a node with the provided value in the list.
    *
    * @param value - The value of the node to find.
