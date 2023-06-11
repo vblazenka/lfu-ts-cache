@@ -49,11 +49,16 @@ export class LinkedList<T> {
   addFirst(value: T | LinkedListNode<T>): LinkedListNode<T> {
     const newNode = this.getNode(value);
 
-    if (!this.head) {
-      this.head = this.tail = newNode;
-    } else {
-      this.head.next = this.head;
-      this.head = newNode;
+    if (this.head) {
+      newNode.next = this.head;
+      this.head.prev = newNode;
+    }
+
+    this.head = newNode;
+
+    // If the list was empty, the new node is also the tail.
+    if (!this.tail) {
+      this.tail = newNode;
     }
 
     this.count++;
@@ -128,23 +133,27 @@ export class LinkedList<T> {
       ? value.value
       : value;
 
-    for (const node of this.values()) {
-      if (node.value === lookupValue) {
-        if (node.prev) {
-          node.prev.next = node.next;
+    let current = this.head;
+
+    while (current) {
+      if (current.value === lookupValue) {
+        if (current.prev) {
+          current.prev.next = current.next;
         } else {
-          this.head = node.next;
+          this.head = current.next;
         }
 
-        if (node.next) {
-          node.next.prev = node.prev;
+        if (current.next) {
+          current.next.prev = current.prev;
         } else {
-          this.tail = node.prev;
+          this.tail = current.prev;
         }
 
         this.count--;
-        break;
+        return;
       }
+
+      current = current.next;
     }
   }
 
@@ -156,7 +165,9 @@ export class LinkedList<T> {
    * @returns The new `LinkedListNode<T>` containing value
    */
   addAfter(node: T | LinkedListNode<T>, newNode: T | LinkedListNode<T>) {
-    const lookupNode = this.isLinkedListNodeInstance(node) ? node : this.find(node);
+    const lookupNode = this.isLinkedListNodeInstance(node)
+      ? node
+      : this.find(node);
     if (!lookupNode) {
       return null;
     }
@@ -174,6 +185,7 @@ export class LinkedList<T> {
     lookupNode.next = insertNode;
 
     this.count++;
+    return insertNode;
   }
 
   /**
@@ -183,10 +195,13 @@ export class LinkedList<T> {
    * @returns The `LinkedListNode<T>` if it is found, otherwise `null`.
    */
   find(value: T): LinkedListNode<T> | null {
-    for (const node of this.values()) {
+    let node = this.head;
+
+    while (node) {
       if (node.value === value) {
         return node;
       }
+      node = node.next;
     }
 
     return null;
@@ -200,20 +215,6 @@ export class LinkedList<T> {
     this.tail = null;
 
     this.count = 0;
-  }
-
-  /**
-   * A generator function that yields each node in the list.
-   *
-   * @returns Next `LinkedListNode<T>`
-   */
-  private *values() {
-    let node = this.head;
-
-    while (node) {
-      yield node;
-      node = node.next;
-    }
   }
 
   /**
