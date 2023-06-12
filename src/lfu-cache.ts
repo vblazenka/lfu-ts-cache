@@ -12,18 +12,17 @@ class FrequencyItem<K, V> {
 }
 
 export class LFUCache<K, V> {
-  private capacity: number;
-  private byKey: Map<string, CacheItem<K, V>> = new Map();
-  private freq: LinkedList<FrequencyItem<K, V>>;
-  private size: number = 0;
+  readonly #capacity: number;
+  #byKey: Map<string, CacheItem<K, V>> = new Map();
+  #freq: LinkedList<FrequencyItem<K, V>> = new LinkedList<FrequencyItem<K, V>>();
+  #size: number = 0;
 
   constructor(capacity: number) {
-    this.capacity = capacity;
-    this.freq = new LinkedList<FrequencyItem<K, V>>();
+    this.#capacity = capacity;
   }
 
   get(key: K): V {
-    const item = this.byKey.get(key);
+    const item = this.#byKey.get(key);
     if (item) {
       this.increment(item);
 
@@ -34,16 +33,16 @@ export class LFUCache<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this.byKey.get(key)) {
-      const item = this.byKey.get(key);
+    if (this.#byKey.get(key)) {
+      const item = this.#byKey.get(key);
       item.value = value;
       this.increment(item);
     } else {
       const item = new CacheItem();
       item.key = key;
       item.value = value;
-      this.byKey.set(key, item);
-      this.size++;
+      this.#byKey.set(key, item);
+      this.#size++;
 
       if (this.atCapacity()) {
         this.evict(1);
@@ -60,7 +59,7 @@ export class LFUCache<K, V> {
 
     if (!currentFrequency) {
       nextFrequencyAmount = 1;
-      nextFrequency = this.freq?.first;
+      nextFrequency = this.#freq?.first;
     } else {
       nextFrequencyAmount = currentFrequency.value.freq + 1;
       nextFrequency = currentFrequency.next;
@@ -72,9 +71,9 @@ export class LFUCache<K, V> {
       newFrequencyItem.entries = new Set<CacheItem<K, V>>();
 
       if (!currentFrequency) {
-        nextFrequency = this.freq.addFirst(newFrequencyItem);
+        nextFrequency = this.#freq.addFirst(newFrequencyItem);
       } else {
-        nextFrequency = this.freq.addAfter(currentFrequency, newFrequencyItem);
+        nextFrequency = this.#freq.addAfter(currentFrequency, newFrequencyItem);
       }
     }
 
@@ -87,13 +86,13 @@ export class LFUCache<K, V> {
 
   private evict(count: number) {
     for (let i = 0; i < count; ) {
-      const item = this.freq.first;
+      const item = this.#freq.first;
 
       item.value.entries.forEach((entry) => {
         if (i < count) {
-          this.byKey.delete(entry.key);
+          this.#byKey.delete(entry.key);
           this.remove(item, entry);
-          this.size--;
+          this.#size--;
           i++;
         }
       });
@@ -113,11 +112,11 @@ export class LFUCache<K, V> {
     });
 
     if (frequencyItem.entries.size === 0) {
-      this.freq.remove(freqItem);
+      this.#freq.remove(freqItem);
     }
   }
 
   private atCapacity() {
-    return this.size > this.capacity;
+    return this.#size > this.#capacity;
   }
 }

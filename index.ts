@@ -1,1 +1,1 @@
-export * from "./src/lfu-cache.js"
+export * from "./src/lfu-cache.js";
