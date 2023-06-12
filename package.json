@@ -1,7 +1,7 @@
 {
   "name": "lfu-ts-cache",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Cache that uses eviction policy to remove least frequently used items.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
