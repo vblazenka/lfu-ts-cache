@@ -1,4 +1,4 @@
-import { LinkedList, LinkedListNode } from "./linked-list";
+import { LinkedList, LinkedListNode } from "./linked-list.js";
 
 class CacheItem<K, V> {
   public key: K;

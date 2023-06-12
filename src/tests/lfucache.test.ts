@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { LFUCache } from "../index";
+import { LFUCache } from "../lfu-cache.js";
 
 describe("LFUCache", function () {
   test("should return null for a key not present in the cache", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { LinkedList, LinkedListNode } from "../linked-list";
+import { LinkedList, LinkedListNode } from "../linked-list.js";
 
 describe("LinkedList<T>", () => {
   test("addFirst", () => {
