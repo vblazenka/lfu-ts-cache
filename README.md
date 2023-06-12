@@ -41,3 +41,9 @@ Gets the value associated with the specified key.
 
 ### set(key: K, value: V): void
 Sets the value associated with the specified key.
+
+## Resources
+
+- [An O(1) algorithm for implementing the LFU cache eviction scheme](http://dhruvbird.com/lfu.pdf)
+- [When and Why to use a Least Frequently Used (LFU) cache with an implementation in Golang](https://ieftimov.com/posts/when-why-least-frequently-used-cache-implementation-golang/)
+- [isaacs/node-lru-cache](https://github.com/isaacs/node-lru-cache/)
