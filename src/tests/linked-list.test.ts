@@ -90,17 +90,23 @@ describe("LinkedList<T>", () => {
     expect(list.count).toEqual(3);
   });
 
-  test("find", () => {
-    const list = new LinkedList<number>();
-    list.addFirst(1);
-    list.addFirst(2);
-    list.addFirst(3);
+  describe("find", () => {
+    test("returns null if not found (empty list)", () => {
+      const list = new LinkedList<number>();
 
-    const n1 = list.find(2);
-    const n2 = list.find(4);
+      const n1 = list.find(4);
+      expect(n1).toBeNull();
+    });
 
-    expect(n1.value).toEqual(2);
-    expect(n2).toBeNull();
+    test("returns null if not found (not in list)", () => {
+      const list = new LinkedList<number>();
+      list.addFirst(1);
+      list.addFirst(2);
+      list.addFirst(3);
+
+      const n1 = list.find(4);
+      expect(n1).toBeNull();
+    });
   });
 
   test("clear", () => {

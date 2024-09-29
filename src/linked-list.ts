@@ -49,9 +49,11 @@ export class LinkedList<T> {
   addFirst(value: T | LinkedListNode<T>): LinkedListNode<T> {
     const newNode = this.getNode(value);
 
-    if (this.head) {
-      newNode.next = this.head;
-      this.head.prev = newNode;
+    const head = this.first;
+
+    if (head) {
+      newNode.next = head;
+      head.prev = newNode;
     }
 
     this.head = newNode;
@@ -195,7 +197,7 @@ export class LinkedList<T> {
    * @returns The `LinkedListNode<T>` if it is found, otherwise `null`.
    */
   find(value: T): LinkedListNode<T> | null {
-    let node = this.head;
+    let node = this.first;
 
     while (node) {
       if (node.value === value) {
