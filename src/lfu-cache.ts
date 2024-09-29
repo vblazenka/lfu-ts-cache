@@ -11,17 +11,21 @@ class FrequencyItem<K, V> {
   public entries: Set<CacheItem<K, V>>;
 }
 
-export class LFUCache<K, V> {
+export class LFUCache<K extends string | number, V> {
   readonly #capacity: number;
-  #byKey: Map<string, CacheItem<K, V>> = new Map();
+  #byKey: Map<K, CacheItem<K, V>> = new Map();
   #freq: LinkedList<FrequencyItem<K, V>> = new LinkedList<FrequencyItem<K, V>>();
   #size: number = 0;
 
   constructor(capacity: number) {
+    if (capacity <= 0) {
+      throw new Error("Capacity must be greater than 0");
+    }
+
     this.#capacity = capacity;
   }
 
-  get(key: K): V {
+  get(key: K): V | null {
     const item = this.#byKey.get(key);
     if (item) {
       this.increment(item);
@@ -33,12 +37,12 @@ export class LFUCache<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this.#byKey.get(key)) {
+    if (this.#byKey.has(key)) {
       const item = this.#byKey.get(key);
       item.value = value;
       this.increment(item);
     } else {
-      const item = new CacheItem();
+      const item = new CacheItem<K, V>();
       item.key = key;
       item.value = value;
       this.#byKey.set(key, item);
@@ -66,7 +70,7 @@ export class LFUCache<K, V> {
     }
 
     if (!nextFrequency || nextFrequency.value.freq !== nextFrequencyAmount) {
-      const newFrequencyItem = new FrequencyItem();
+      const newFrequencyItem = new FrequencyItem<K, V>();
       newFrequencyItem.freq = nextFrequencyAmount;
       newFrequencyItem.entries = new Set<CacheItem<K, V>>();
 
@@ -87,6 +91,7 @@ export class LFUCache<K, V> {
   private evict(count: number) {
     for (let i = 0; i < count; ) {
       const item = this.#freq.first;
+      if (!item) break;
 
       item.value.entries.forEach((entry) => {
         if (i < count) {
